@@ -5,10 +5,12 @@ import br.com.udemy.springapiblog.model.repository.PostRepository;
 import br.com.udemy.springapiblog.model.service.PostConverterService;
 import br.com.udemy.springapiblog.model.service.PostService;
 import br.com.udemy.springapiblog.view.dto.PostDTO;
+import br.com.udemy.springapiblog.view.exception.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class PostServiceImpl implements PostService {
@@ -33,13 +35,13 @@ public class PostServiceImpl implements PostService {
     @Override
     public List<PostDTO> getAllPosts() {
         List<Post> posts = postRepository.findAll();
+        return posts.stream().map(post -> converterService.convertToDTO(post)).collect(Collectors.toList());
+    }
 
-        List<PostDTO> postDTOs = new ArrayList<>();
-        for (Post post: posts) {
-            postDTOs.add(converterService.convertToDTO(post));
-        }
-
-        return postDTOs;
+    @Override
+    public PostDTO getById(long id) {
+        Post post = postRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Post", "id", String.valueOf(id)));
+        return converterService.convertToDTO(post);
     }
 
 }
