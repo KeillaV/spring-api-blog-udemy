@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 // Sempre que for lançada essa exceção, a api vai retornar esse status code:
-@ResponseStatus(value = HttpStatus.NOT_FOUND, reason = "Resource not found")
+//@ResponseStatus(value = HttpStatus.NOT_FOUND, reason = "Resource not found")
 @Getter
 public class ResourceNotFoundException extends RuntimeException {
     private String resourceName;

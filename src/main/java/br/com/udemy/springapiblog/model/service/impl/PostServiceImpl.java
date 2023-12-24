@@ -8,7 +8,6 @@ import br.com.udemy.springapiblog.view.dto.PostDTO;
 import br.com.udemy.springapiblog.view.exception.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -42,6 +41,29 @@ public class PostServiceImpl implements PostService {
     public PostDTO getById(long id) {
         Post post = postRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Post", "id", String.valueOf(id)));
         return converterService.convertToDTO(post);
+    }
+
+    @Override
+    public PostDTO updatePost(long id, PostDTO postDTO) {
+        Post post = converterService.convertToEntity(postDTO);
+
+        Post updatedPost;
+        if (postRepository.existsById(id)) {
+            post.setId(id);
+            updatedPost = postRepository.save(post);
+            return converterService.convertToDTO(updatedPost);
+        }
+
+        throw new ResourceNotFoundException("Post", "id", String.valueOf(id));
+    }
+
+    @Override
+    public void deletePostById(long id) {
+        if (!postRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Post", "id", String.valueOf(id));
+        }
+
+        postRepository.deleteById(id);
     }
 
 }
